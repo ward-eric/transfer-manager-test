@@ -22,16 +22,21 @@ public class TransferManagerTest {
   public static void main(String[] args) {
     if (args.length != 1) {
       LOG.info("Must supply a bucket name!");
+      System.exit(0);
     }
     String bucketName = args[0];
+    // More threads increases the likelihood of hitting the error. The production app
+    // hits it with only 4 threads, but I had to crank up the thread count to reliably
+    // reproduce here.
     int threadCount = 100;
-
     ExecutorService executorService = Executors.newFixedThreadPool(
       threadCount,
       new ThreadFactoryBuilder().daemonThreads(true).threadNamePrefix("test-worker").build()
     );
 
     // arbitrary data to write into the output stream
+    // my production app is streaming data from an external source, batching it, and
+    // then storing it in S3
     byte[] junkBytes = new byte[1024 * 1024];
     ThreadLocalRandom.current().nextBytes(junkBytes);
 

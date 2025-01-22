@@ -43,6 +43,7 @@ public class ByteStreamer implements Runnable {
       .requestBody(body)
       .build());
     try (DeflaterOutputStream outputStream = new DeflaterOutputStream(body.outputStream())) {
+      // Simulate reading data from external system in chunks
       for (int i=0; i<100; ++i) {
         outputStream.write(junkBytes);
       }
